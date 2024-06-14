@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "no.nav.helsearbeidsgiver"
-version = "0.1"
+version = "0.1.1"
 
 repositories {
     mavenCentral()
@@ -17,7 +17,7 @@ publishing {
         }
     }
     repositories {
-        mavenNav("helsearbeidsgiver-${rootProject.name}")
+        mavenNav("hag-${rootProject.name}")
     }
 }
 

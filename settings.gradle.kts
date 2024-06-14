@@ -1,5 +1,5 @@
 
-rootProject.name = "hag-maskinporten-client"
+rootProject.name = "maskinporten-client"
 
 pluginManagement {
     val kotlinVersion: String by settings

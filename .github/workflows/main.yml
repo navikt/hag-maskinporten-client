@@ -19,7 +19,7 @@ jobs:
           cache: gradle
 
       - name: Verify Gradle wrapper checksum
-        uses: gradle/wrapper-validation-action@v1
+        uses: gradle/wrapper-validation-action@v3
 
       - name: Build with Gradle and Publish artifact
         run: ./gradlew build publish
