@@ -1,5 +1,11 @@
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
-}
+
 rootProject.name = "hag-maskinporten-client"
 
+pluginManagement {
+    val kotlinVersion: String by settings
+
+    plugins {
+        kotlin("jvm") version kotlinVersion
+        id("maven-publish")
+    }
+}
