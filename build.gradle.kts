@@ -1,10 +1,18 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     kotlin("jvm")
     id("maven-publish")
 }
 
 group = "no.nav.helsearbeidsgiver"
-version = "0.1.1"
+version = "0.1.2"
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
+}
 
 repositories {
     mavenCentral()
@@ -28,9 +36,7 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
-kotlin {
-    jvmToolchain(21)
-}
+
 fun RepositoryHandler.mavenNav(repo: String): MavenArtifactRepository {
     val githubPassword: String by project
 
