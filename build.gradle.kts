@@ -5,7 +5,7 @@ plugins {
     id("maven-publish")
 }
 group = "no.nav.helsearbeidsgiver"
-version = "0.1.3"
+version = "0.1.6"
 
 
 kotlin {
@@ -33,11 +33,10 @@ publishing {
 dependencies {
     val kotlinxSerializationVersion: String by project
     val ktorVersion: String by project
-    val mockkVersion: String by project
     val utilsVersion: String by project
 
 
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("no.nav.helsearbeidsgiver:utils:$utilsVersion")
     implementation("io.ktor:ktor-client-apache5:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
@@ -46,9 +45,7 @@ dependencies {
     implementation("com.nimbusds:nimbus-jose-jwt:9.40")
 
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
-    testImplementation("io.ktor:ktor-client-mock:2.3.3")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:2.0.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.0.0")
+    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:1.13.11")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation(kotlin("test"))
