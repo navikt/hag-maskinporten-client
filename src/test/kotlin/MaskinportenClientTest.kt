@@ -1,4 +1,3 @@
-
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -19,7 +18,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-
 class MaskinportenClientTest {
 
     @Test
@@ -37,8 +35,6 @@ class MaskinportenClientTest {
                 getMaskinportenClientConfig()
             )
 
-
-
             val tokenResponseWrapper = maskinportenClient.fetchNewAccessToken()
 
             assertEquals("test_token", tokenResponseWrapper.tokenResponse.accessToken)
@@ -46,17 +42,7 @@ class MaskinportenClientTest {
             assertEquals("test:test1", tokenResponseWrapper.tokenResponse.scope)
             assertEquals("Bearer", tokenResponseWrapper.tokenResponse.tokenType)
         }
-
-
     }
-
-    private fun getMaskinportenClientConfig() = MaskinportenClientConfig(
-        "test_scope",
-        "test_client_id",
-        generateJWK(),
-        "https://test.test.no/",
-        "https://test.test.no/token"
-    )
 
     @Test
     fun testFetchNewAccessTokenFailure() = runBlocking {
@@ -72,14 +58,19 @@ class MaskinportenClientTest {
             every { createHttpClient() } returns httpclientMock(mockEngine)
             val maskinportenClient = MaskinportenClient(getMaskinportenClientConfig())
 
-
             val exception = assertFailsWith<ClientRequestException> { maskinportenClient.fetchNewAccessToken() }
 
             assertEquals(HttpStatusCode.Unauthorized.value, exception.response.status.value)
         }
-
-
     }
+
+    private fun getMaskinportenClientConfig() = MaskinportenClientConfig(
+        "test_scope",
+        "test_client_id",
+        generateJWK(),
+        "https://test.test.no/",
+        "https://test.test.no/token"
+    )
 
     private fun httpclientMock(mockEngine: MockEngine) = HttpClient(mockEngine) {
         expectSuccess = true

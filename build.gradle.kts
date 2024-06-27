@@ -2,11 +2,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
+    id("org.jlleitschuh.gradle.ktlint")
     id("maven-publish")
 }
 group = "no.nav.helsearbeidsgiver"
 version = "0.1.8-SNAPSHOT"
-
 
 kotlin {
     compilerOptions {
@@ -39,7 +39,6 @@ dependencies {
     val ktorVersion: String by project
     val utilsVersion: String by project
 
-
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("no.nav.helsearbeidsgiver:utils:$utilsVersion")
     implementation("io.ktor:ktor-client-apache5:$ktorVersion")
@@ -55,8 +54,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation(kotlin("test"))
     testRuntimeOnly("org.slf4j:slf4j-simple:2.0.7")
-
-
 }
 
 tasks.test {

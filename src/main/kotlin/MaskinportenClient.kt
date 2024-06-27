@@ -11,7 +11,6 @@ import io.ktor.http.contentType
 import io.ktor.http.formUrlEncode
 import no.nav.helsearbeidsgiver.utils.log.logger
 
-
 private const val GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
 
 class MaskinportenClient(private val maskinportenClientConfig: MaskinportenClientConfig) {
@@ -19,7 +18,6 @@ class MaskinportenClient(private val maskinportenClientConfig: MaskinportenClien
     private val httpClient = createHttpClient()
 
     private val logger = this.logger()
-
 
     suspend fun fetchNewAccessToken(): TokenResponseWrapper {
         logger.info("Henter ny access token fra Maskinporten")
@@ -60,10 +58,4 @@ class MaskinportenClient(private val maskinportenClientConfig: MaskinportenClien
             }
         )
     }
-
 }
-
-
-
-
-
