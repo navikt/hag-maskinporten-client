@@ -1,19 +1,19 @@
-
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
-import io.ktor.client.*
-import io.ktor.client.engine.mock.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
+import io.ktor.serialization.kotlinx.json.json
 import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.unmockkAll
 import kotlinx.coroutines.runBlocking
-import no.nav.helsearbeidsgiver.maskinporten.EnvWrapper
 import no.nav.helsearbeidsgiver.maskinporten.MaskinportenClient
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
+import no.nav.helsearbeidsgiver.maskinporten.MaskinportenClientConfig
+import no.nav.helsearbeidsgiver.maskinporten.createHttpClient
+import no.nav.helsearbeidsgiver.utils.test.mock.mockStatic
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -29,18 +29,19 @@ class MaskinportenClientTest {
                 headers = headersOf("Content-Type" to listOf(ContentType.Application.Json.toString()))
             )
         }
+        mockStatic(::createHttpClient) {
+            every { createHttpClient() } returns httpclientMock(mockEngine)
+            val maskinportenClient = MaskinportenClient(
+                getMaskinportenClientConfig()
+            )
 
-        val client = httpclientMock(mockEngine)
+            val tokenResponseWrapper = maskinportenClient.fetchNewAccessToken()
 
-        val maskinportenClient = MaskinportenClient("test_scope")
-        maskinportenClient.setHttpClient(client)
-
-        val tokenResponseWrapper = maskinportenClient.fetchNewAccessToken()
-
-        assertEquals("test_token", tokenResponseWrapper.tokenResponse.accessToken)
-        assertEquals(3600, tokenResponseWrapper.tokenResponse.expiresInSeconds)
-        assertEquals("test:test1", tokenResponseWrapper.tokenResponse.scope)
-        assertEquals("Bearer", tokenResponseWrapper.tokenResponse.tokenType)
+            assertEquals("test_token", tokenResponseWrapper.tokenResponse.accessToken)
+            assertEquals(3600, tokenResponseWrapper.tokenResponse.expiresInSeconds)
+            assertEquals("test:test1", tokenResponseWrapper.tokenResponse.scope)
+            assertEquals("Bearer", tokenResponseWrapper.tokenResponse.tokenType)
+        }
     }
 
     @Test
@@ -53,15 +54,23 @@ class MaskinportenClientTest {
             )
         }
 
-        val client = httpclientMock(mockEngine)
+        mockStatic(::createHttpClient) {
+            every { createHttpClient() } returns httpclientMock(mockEngine)
+            val maskinportenClient = MaskinportenClient(getMaskinportenClientConfig())
 
-        val maskinportenClient = MaskinportenClient("test_scope")
-        maskinportenClient.setHttpClient(client)
+            val exception = assertFailsWith<ClientRequestException> { maskinportenClient.fetchNewAccessToken() }
 
-        val exception = assertFailsWith<ClientRequestException> { maskinportenClient.fetchNewAccessToken() }
-
-        assertEquals(HttpStatusCode.Unauthorized.value, exception.response.status.value)
+            assertEquals(HttpStatusCode.Unauthorized.value, exception.response.status.value)
+        }
     }
+
+    private fun getMaskinportenClientConfig() = MaskinportenClientConfig(
+        "test_scope",
+        "test_client_id",
+        generateJWK(),
+        "https://test.test.no/",
+        "https://test.test.no/token"
+    )
 
     private fun httpclientMock(mockEngine: MockEngine) = HttpClient(mockEngine) {
         expectSuccess = true
@@ -70,24 +79,5 @@ class MaskinportenClientTest {
         }
     }
 
-    companion object {
-        @JvmStatic
-        @BeforeAll
-        fun setUp() {
-            mockkObject(EnvWrapper)
-            every { EnvWrapper.getEnv("MASKINPORTEN_CLIENT_ID") } returns "TEST_CLIENT_ID"
-            every { EnvWrapper.getEnv("MASKINPORTEN_CLIENT_JWK") } returns generateJWK()
-            every { EnvWrapper.getEnv("MASKINPORTEN_ISSUER") } returns "https://test.test.no/"
-            every { EnvWrapper.getEnv("MASKINPORTEN_SCOPES") } returns "test:test/test"
-            every { EnvWrapper.getEnv("MASKINPORTEN_TOKEN_ENDPOINT") } returns "https://test.test.no/token"
-        }
-
-        private fun generateJWK() = RSAKeyGenerator(2048).keyID("test-key-id").generate().toString()
-
-        @JvmStatic
-        @AfterAll
-        fun tearDown() {
-            unmockkAll()
-        }
-    }
+    private fun generateJWK() = RSAKeyGenerator(2048).generate().toJSONString()
 }

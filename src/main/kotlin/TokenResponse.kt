@@ -16,7 +16,7 @@ data class TokenResponse(
     @SerialName("access_token") val accessToken: String,
     @SerialName("token_type") val tokenType: String,
     @SerialName("expires_in") val expiresInSeconds: Long,
-    val scope: String,
+    val scope: String
 )
 class TokenResponseWrapper(val tokenResponse: TokenResponse) {
 

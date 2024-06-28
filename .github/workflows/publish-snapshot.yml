@@ -22,10 +22,16 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
+
+      - name: Ensure Gradle Wrapper is Downloaded
+        run: ./gradlew --version
+
       - name: Get Version
-        run:  |
-          echo "CURRENT_VERSION=$(./gradlew :printVersion --quiet)"
-          echo "CURRENT_VERSION=$(./gradlew :printVersion --quiet)" >> $GITHUB_ENV
+        run:  echo "CURRENT_VERSION=$(./gradlew :printVersion --quiet)" >> $GITHUB_ENV
+
+      - name: Print Project Version
+        run: echo "Project version is ${{ env.CURRENT_VERSION }}"
+
       - name: Publish artifact
         if: ${{ endsWith(env.CURRENT_VERSION, '-SNAPSHOT') }}
         run: ./gradlew publish
