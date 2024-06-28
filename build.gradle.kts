@@ -20,7 +20,9 @@ repositories {
 }
 
 tasks.register("printVersion") {
-    printVersion()
+    doLast {
+        println(project.version)
+    }
 }
 
 publishing {
@@ -75,4 +77,3 @@ fun RepositoryHandler.mavenNav(repo: String): MavenArtifactRepository {
         }
     }
 }
-fun printVersion() = println(version)
