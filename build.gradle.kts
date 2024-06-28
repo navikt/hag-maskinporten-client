@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
@@ -20,9 +21,7 @@ repositories {
 }
 
 tasks.register("printVersion") {
-    doLast {
-        println(project.version)
-    }
+    println(project.version)
 }
 
 publishing {
