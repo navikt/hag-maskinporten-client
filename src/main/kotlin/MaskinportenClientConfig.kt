@@ -8,47 +8,49 @@ import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import java.time.Instant
-import java.util.*
+import java.util.Date
+import java.util.UUID
 
-class MaskinportenClientConfig(scope: String) {
+data class MaskinportenClientConfig(
+    val scope: String,
+    val clientId: String,
+    val clientJwk: String,
+    val issuer: String,
+    val endpoint: String
+) {
 
-    private val clientId: String = EnvWrapper.getEnv("MASKINPORTEN_CLIENT_ID") ?: throw IllegalStateException("Fant ikke MASKINPORTEN_CLIENT_ID")
-    private val clientJwk: String = EnvWrapper.getEnv("MASKINPORTEN_CLIENT_JWK") ?: throw IllegalStateException("Fant ikke MASKINPORTEN_CLIENT_JWK")
-    private val issuer: String = EnvWrapper.getEnv("MASKINPORTEN_ISSUER") ?: throw IllegalStateException("Fant ikke MASKINPORTEN_ISSUER")
-    // Denne er foreløig ikke i bruk, men kan verifisere at scopet er riktig ved et senere tidspunkt.
-    private val scopes: String = EnvWrapper.getEnv("MASKINPORTEN_SCOPES") ?: throw IllegalStateException("Fant ikke MASKINPORTEN_SCOPES")
-    private val ENDPOINT: String = EnvWrapper.getEnv("MASKINPORTEN_TOKEN_ENDPOINT") ?: throw IllegalStateException("Fant ikke MASKINPORTEN_TOKEN_ENDPOINT")
-
-    private val rsaKey: RSAKey = RSAKey.parse(clientJwk)
-    private val signer: RSASSASigner = RSASSASigner(rsaKey.toPrivateKey())
-    private val header: JWSHeader = JWSHeader.Builder(JWSAlgorithm.RS256)
-        .keyID(rsaKey.keyID)
-        .type(JOSEObjectType.JWT)
-        .build()
-
-    private val now: Date = Date.from(Instant.now())
-    private val expiration: Date = Date.from(Instant.now().plusSeconds(60))
-    private val claims: JWTClaimsSet = JWTClaimsSet.Builder()
-        .issuer(clientId)
-        .audience(issuer)
-        .issueTime(now)
-        .claim("scope", scope)
-        .expirationTime(expiration)
-        .jwtID(UUID.randomUUID().toString())
-        .build()
-
-    fun getJwtAssertion(): String = SignedJWT(header, claims)
-        .apply { sign(signer) }
-        .serialize()
-
-    fun getEndpoint(): String {
-        return ENDPOINT
+    private val rsaKey: RSAKey by lazy {
+        try {
+            RSAKey.parse(clientJwk)
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Invalid JWK format", e)
+        }
+    }
+    private val signer: RSASSASigner by lazy {
+        RSASSASigner(rsaKey.toPrivateKey())
+    }
+    private val header: JWSHeader by lazy {
+        JWSHeader.Builder(JWSAlgorithm.RS256)
+            .keyID(rsaKey.keyID)
+            .type(JOSEObjectType.JWT)
+            .build()
     }
 
-}
+    private fun currentTime(): Date = Date.from(Instant.now())
 
-object EnvWrapper {
-    fun getEnv(key: String): String? {
-        return System.getenv(key)
+    private val claims: JWTClaimsSet by lazy {
+        val now = currentTime()
+        JWTClaimsSet.Builder()
+            .issuer(clientId)
+            .audience(issuer)
+            .issueTime(now)
+            .claim("scope", scope)
+            .expirationTime(Date.from(now.toInstant().plusSeconds(60)))
+            .jwtID(UUID.randomUUID().toString())
+            .build()
+    }
+
+    fun getJwtAssertion(): String {
+        return SignedJWT(header, claims).apply { sign(signer) }.serialize()
     }
 }

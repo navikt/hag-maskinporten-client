@@ -1,12 +1,13 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
+    id("org.jlleitschuh.gradle.ktlint")
     id("maven-publish")
 }
 group = "no.nav.helsearbeidsgiver"
-version = "0.1.6"
-
+version = "0.1.8"
 
 kotlin {
     compilerOptions {
@@ -17,6 +18,10 @@ kotlin {
 repositories {
     mavenCentral()
     mavenNav("*")
+}
+
+tasks.register("printVersion") {
+    println(project.version)
 }
 
 publishing {
@@ -35,7 +40,6 @@ dependencies {
     val ktorVersion: String by project
     val utilsVersion: String by project
 
-
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("no.nav.helsearbeidsgiver:utils:$utilsVersion")
     implementation("io.ktor:ktor-client-apache5:$ktorVersion")
@@ -45,13 +49,12 @@ dependencies {
     implementation("com.nimbusds:nimbus-jose-jwt:9.40")
 
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    testImplementation(testFixtures("no.nav.helsearbeidsgiver:utils:$utilsVersion"))
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:1.13.11")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation(kotlin("test"))
     testRuntimeOnly("org.slf4j:slf4j-simple:2.0.7")
-
-
 }
 
 tasks.test {
