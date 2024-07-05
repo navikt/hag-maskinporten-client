@@ -38,9 +38,9 @@ data class MaskinportenClientConfig(
 
     private fun currentTime(): Date = Date.from(Instant.now())
 
-    private val claims: JWTClaimsSet by lazy {
+    private fun claims(): JWTClaimsSet {
         val now = currentTime()
-        JWTClaimsSet.Builder()
+        return JWTClaimsSet.Builder()
             .issuer(clientId)
             .audience(issuer)
             .issueTime(now)
@@ -51,6 +51,6 @@ data class MaskinportenClientConfig(
     }
 
     fun getJwtAssertion(): String {
-        return SignedJWT(header, claims).apply { sign(signer) }.serialize()
+        return SignedJWT(header, claims()).apply { sign(signer) }.serialize()
     }
 }

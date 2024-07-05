@@ -17,7 +17,11 @@ data class TokenResponse(
     @SerialName("token_type") val tokenType: String,
     @SerialName("expires_in") val expiresInSeconds: Long,
     val scope: String
-)
+) {
+    override fun toString(): String {
+        return "TokenResponse(accessToken='${accessToken.take(3)}', tokenType='$tokenType', expiresInSeconds=$expiresInSeconds, scope='$scope')"
+    }
+}
 class TokenResponseWrapper(val tokenResponse: TokenResponse) {
 
     private val issueTime = System.currentTimeMillis() / 1000
