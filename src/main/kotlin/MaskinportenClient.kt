@@ -18,7 +18,7 @@ class MaskinportenClient(private val maskinportenClientConfig: MaskinportenClien
     private val httpClient = createHttpClient()
 
     suspend fun fetchNewAccessToken(): TokenResponseWrapper {
-        sikkerLogger().info("Henter ny access token fra Maskinporten")
+        sikkerLogger().info("Maskinporten: Henter ny access token fra Maskinporten")
 
         val result = runCatching {
             val response: HttpResponse = httpClient.post(maskinportenClientConfig.endpoint) {
@@ -35,21 +35,22 @@ class MaskinportenClient(private val maskinportenClientConfig: MaskinportenClien
         return result.fold(
             onSuccess = { tokenResponse ->
                 TokenResponseWrapper(tokenResponse).also {
-                    sikkerLogger().info("Hentet ny access token. Expires in ${it.remainingTimeInSeconds} seconds.")
+                    sikkerLogger().info("Maskinporten: Hentet ny access token. ${it.tokenResponse} ")
+                    sikkerLogger().info("Maskinporten: Hentet ny access token. Expires in ${it.remainingTimeInSeconds} seconds.")
                 }
             },
             onFailure = { e ->
                 when (e) {
                     is ClientRequestException -> {
-                        sikkerLogger().error("ClientRequestException: Feilet å hente ny access token fra Maskinporten. Status: ${e.response.status}, Message: ${e.message} Exception: $e")
+                        sikkerLogger().error("Maskinporten:: ClientRequestException: Feilet å hente ny access token fra Maskinporten. Status: ${e.response.status}, Message: ${e.message} Exception: $e")
                     }
 
                     is ServerResponseException -> {
-                        sikkerLogger().error("ServerResponseException: Feilet å hente ny access token fra Maskinporten. Status: ${e.response.status}, Message: ${e.message} Exception: $e")
+                        sikkerLogger().error("Maskinporten: ServerResponseException: Feilet å hente ny access token fra Maskinporten. Status: ${e.response.status}, Message: ${e.message} Exception: $e")
                     }
 
                     else -> {
-                        sikkerLogger().error("Feilet å hente ny access token fra Maskinporten: $e")
+                        sikkerLogger().error("Maskinporten: Feilet å hente ny access token fra Maskinporten: $e")
                     }
                 }
                 throw e
