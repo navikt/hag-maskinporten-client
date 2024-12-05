@@ -7,6 +7,7 @@ import com.nimbusds.jose.crypto.RSASSASigner
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
+import no.nav.helsearbeidsgiver.utils.log.logger
 import java.security.KeyFactory
 import java.security.PrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
@@ -82,8 +83,9 @@ class MaskinportenClientConfigPkey(
 
         val signer = RSASSASigner(loadPrivateKey(privateKey))
         val signedJWT = SignedJWT(header, claims)
+        logger().info("JWT claims: $claims")
         signedJWT.sign(signer)
-
+        logger().info("JWT signed: ${signedJWT.serialize()}")
         return signedJWT.serialize()
     }
 }
