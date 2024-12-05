@@ -17,26 +17,32 @@ import java.util.UUID
 
 interface MaskinportenClientConfig {
     val scope: String
-    val clientId: String
-    val clientJwk: String
     val issuer: String
+    val aud: String
     val endpoint: String
     fun getJwtAssertion(): String
 }
 
+/**
+ * MaskinportenClientConfigPkey er en implementasjon av MaskinportenClientConfig med privatekey som autentiseringsmetode for maskinporten
+ * @param kid  Det er id-en til Nøkkelen key-id (kid)
+ * @param privateKey  Det er privatekey som skal brukes til å signere JWT tokenet
+ * @param issuer  Det er Klient-id eller integration-id fra maskinporten det er en UUID
+ * @param aud  Det er mottaker av tokenet i test er det https://test-maskinporten.no/
+ * @param consumerOrgNr  Det er organisasjonsnummeret til virksomheten som skal bruke maskinporten på vegne av
+ * @param scope  Det er rettighetene som skal gis til maskinporten
+ * @param endpoint  Det er endepunktet til maskinporten
+ *
+ */
 class MaskinportenClientConfigPkey(
     val kid: String,
     val privateKey: String,
     override val issuer: String,
+    override val aud: String,
     val consumerOrgNr: String,
-    override val scope: String = LPS_API_SCOPE,
-    override val endpoint: String = "https://test.maskinporten.no/token",
-    override val clientId: String,
-    override val clientJwk: String,
+    override val scope: String,
+    override val endpoint: String ,
 ) : MaskinportenClientConfig {
-    companion object {
-        const val LPS_API_SCOPE = "nav:inntektsmelding/lps.write"
-    }
 
     private fun loadPrivateKey(key: String): PrivateKey {
         val keyText =
@@ -66,7 +72,7 @@ class MaskinportenClientConfigPkey(
             JWTClaimsSet
                 .Builder()
                 .issuer(issuer)
-                .audience(issuer)
+                .audience(aud)
                 .issueTime(Date(currentTimestamp * 1000))
                 .expirationTime(Date((currentTimestamp + 60) * 1000))
                 .claim("scope", scope)
@@ -82,12 +88,21 @@ class MaskinportenClientConfigPkey(
     }
 }
 
+/**
+ * MaskinportenSimpleAssertion er en implementasjon av MaskinportenClientConfig med assertion som autentiseringsmetode for maskinporten Denne brukes for å authentisere mot maskinporten for eksample for Altinn
+ * @param scope  Det er rettighetene som skal gis til maskinporten
+ * @param issuer  Det er Klient-id eller integration-id fra maskinporten det er en UUID
+ * @param aud  Det er mottaker av tokenet i test er det https://test-maskinporten.no/
+ * @param endpoint  Det er endepunktet til maskinporten
+ * @param clientJwk  Det er JWK som skal brukes til å signere JWT tokenet
+ *
+ */
 class MaskinportenSimpleAssertion(
     override val scope: String,
-    override val clientId: String,
-    override val clientJwk: String,
     override val issuer: String,
-    override val endpoint: String
+    override val aud: String,
+    override val endpoint: String,
+    val clientJwk: String,
 ) : MaskinportenClientConfig {
 
     private val rsaKey: RSAKey by lazy {
@@ -112,8 +127,8 @@ class MaskinportenSimpleAssertion(
     private fun claims(): JWTClaimsSet {
         val now = currentTime()
         return JWTClaimsSet.Builder()
-            .issuer(clientId)
-            .audience(issuer)
+            .issuer(issuer)
+            .audience(aud)
             .issueTime(now)
             .claim("scope", scope)
             .expirationTime(Date.from(now.toInstant().plusSeconds(60)))
