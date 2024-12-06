@@ -12,7 +12,7 @@ import io.mockk.every
 import kotlinx.coroutines.runBlocking
 import no.nav.helsearbeidsgiver.maskinporten.MaskinportenClient
 import no.nav.helsearbeidsgiver.maskinporten.MaskinportenClientConfigPkey
-import no.nav.helsearbeidsgiver.maskinporten.MaskinportenSimpleAssertion
+import no.nav.helsearbeidsgiver.maskinporten.MaskinportenClientConfigSimpleAssertion
 import no.nav.helsearbeidsgiver.maskinporten.createHttpClient
 import no.nav.helsearbeidsgiver.utils.test.mock.mockStatic
 import org.junit.jupiter.api.Test
@@ -99,7 +99,7 @@ class MaskinportenClientTest {
         }
     }
 
-    private fun getMaskinportenClientConfig() = MaskinportenSimpleAssertion(
+    private fun getMaskinportenClientConfig() = MaskinportenClientConfigSimpleAssertion(
         scope = "test_scope",
         issuer = "test_client_id",
         clientJwk = generateJWK(),
