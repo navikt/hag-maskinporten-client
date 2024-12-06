@@ -11,14 +11,12 @@ import io.ktor.serialization.kotlinx.json.json
 import io.mockk.every
 import kotlinx.coroutines.runBlocking
 import no.nav.helsearbeidsgiver.maskinporten.MaskinportenClient
-import no.nav.helsearbeidsgiver.maskinporten.MaskinportenClientConfig
 import no.nav.helsearbeidsgiver.maskinporten.MaskinportenClientConfigPkey
 import no.nav.helsearbeidsgiver.maskinporten.MaskinportenSimpleAssertion
 import no.nav.helsearbeidsgiver.maskinporten.createHttpClient
 import no.nav.helsearbeidsgiver.utils.test.mock.mockStatic
 import org.junit.jupiter.api.Test
 import java.security.KeyPairGenerator
-import java.security.PrivateKey
 import java.util.Base64
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -99,9 +97,7 @@ class MaskinportenClientTest {
             assertEquals("test:test1", tokenResponseWrapper.tokenResponse.scope)
             assertEquals("Bearer", tokenResponseWrapper.tokenResponse.tokenType)
         }
-
     }
-
 
     private fun getMaskinportenClientConfig() = MaskinportenSimpleAssertion(
         scope = "test_scope",
@@ -126,6 +122,5 @@ class MaskinportenClientTest {
 
         val pkey = Base64.getEncoder().encodeToString(keyPair.private.encoded)
         return "-----BEGIN PRIVATE KEY-----\n$pkey\n-----END PRIVATE KEY-----"
-
     }
 }

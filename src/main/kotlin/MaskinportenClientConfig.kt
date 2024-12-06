@@ -7,7 +7,6 @@ import com.nimbusds.jose.crypto.RSASSASigner
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
-import no.nav.helsearbeidsgiver.utils.log.logger
 import java.security.KeyFactory
 import java.security.PrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
@@ -43,7 +42,7 @@ class MaskinportenClientConfigPkey(
     override val aud: String,
     val consumerOrgNr: String,
     override val scope: String,
-    override val endpoint: String ,
+    override val endpoint: String
 ) : MaskinportenClientConfig {
 
     private fun loadPrivateKey(key: String): PrivateKey {
@@ -106,7 +105,7 @@ class MaskinportenSimpleAssertion(
     override val issuer: String,
     override val aud: String,
     override val endpoint: String,
-    val clientJwk: String,
+    val clientJwk: String
 ) : MaskinportenClientConfig {
 
     private val rsaKey: RSAKey by lazy {
