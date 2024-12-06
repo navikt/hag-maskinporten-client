@@ -26,6 +26,7 @@ interface MaskinportenClientConfig {
 
 /**
  * MaskinportenClientConfigPkey er en implementasjon av MaskinportenClientConfig med privatekey som autentiseringsmetode for maskinporten
+ *
  * @param kid  Det er id-en til Nøkkelen key-id (kid)
  * @param privateKey  Det er privatekey som skal brukes til å signere JWT tokenet
  * @param issuer  Det er Klient-id eller integration-id fra maskinporten det er en UUID
@@ -90,7 +91,9 @@ class MaskinportenClientConfigPkey(
 }
 
 /**
- * MaskinportenSimpleAssertion er en implementasjon av MaskinportenClientConfig med assertion som autentiseringsmetode for maskinporten Denne brukes for å authentisere mot maskinporten for eksample for Altinn
+ * MaskinportenSimpleAssertion er en implementasjon av MaskinportenClientConfig med assertion som autentiseringsmetode
+ * for maskinporten Denne brukes for å authentisere mot maskinporten for eksample for Altinn
+ *
  * @param scope  Det er rettighetene som skal gis til maskinporten
  * @param issuer  Det er Klient-id eller integration-id fra maskinporten det er en UUID
  * @param aud  Det er mottaker av tokenet i test er det https://test-maskinporten.no/
