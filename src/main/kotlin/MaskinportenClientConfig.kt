@@ -83,9 +83,8 @@ class MaskinportenClientConfigPkey(
 
         val signer = RSASSASigner(loadPrivateKey(privateKey))
         val signedJWT = SignedJWT(header, claims)
-        logger().info("JWT claims: $claims")
         signedJWT.sign(signer)
-        logger().info("JWT signed: ${signedJWT.serialize()}")
+
         return signedJWT.serialize()
     }
 }
