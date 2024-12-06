@@ -77,7 +77,18 @@ class MaskinportenClientConfigPkey(
                 .issueTime(Date(currentTimestamp * 1000))
                 .expirationTime(Date((currentTimestamp + 60) * 1000))
                 .claim("scope", scope)
-                .claim("consumer_org", consumerOrgNr)
+                .claim(
+                    "authorization_details",
+                    listOf(
+                        mapOf(
+                            "type" to "urn:altinn:systemuser",
+                            "systemuser_org" to mapOf(
+                                "authority" to "iso6523-actorid-upis",
+                                "ID" to "0192:$consumerOrgNr"
+                            )
+                        )
+                    )
+                )
                 .jwtID(UUID.randomUUID().toString())
                 .build()
 
@@ -100,7 +111,7 @@ class MaskinportenClientConfigPkey(
  * @param clientJwk  Det er JWK som skal brukes til å signere JWT tokenet
  *
  */
-class MaskinportenSimpleAssertion(
+class MaskinportenClientConfigSimpleAssertion(
     override val scope: String,
     override val issuer: String,
     override val aud: String,
