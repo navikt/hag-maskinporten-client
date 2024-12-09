@@ -26,7 +26,7 @@ interface MaskinportenClientConfig {
 /**
  * MaskinportenClientConfigPkey er en implementasjon av MaskinportenClientConfig med privatekey som autentiseringsmetode for maskinporten
  *
- * @param kid  Det er id-en til Nøkkelen key-id (kid)
+ * @param kid  Det er id-en til nøkkelen key-id (kid).
  * @param privateKey  Det er privatekey som skal brukes til å signere JWT tokenet
  * @param clientId  Din egen client_id. Sendes videre til Maskinporten som en issuer claim.
  * @param issuer Issuer-identifikatoren til Maskinporten. 'https://maskinporten.no/' i produksjon. Sendes videre til Maskinporten som en audience claim.
