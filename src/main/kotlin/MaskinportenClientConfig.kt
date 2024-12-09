@@ -28,8 +28,8 @@ interface MaskinportenClientConfig {
  *
  * @param kid  Det er id-en til Nøkkelen key-id (kid)
  * @param privateKey  Det er privatekey som skal brukes til å signere JWT tokenet
- * @param clientId  issuer - Din egen client_id.
- * @param issuer Audience - issuer-identifikatoren til Maskinporten. Verdi for aktuelt miljø finner du på .well-known-endpunkt.
+ * @param clientId  Din egen client_id. Sendes videre til Maskinporten som en issuer claim.
+ * @param issuer Issuer-identifikatoren til Maskinporten. 'https://maskinporten.no/' i produksjon. Sendes videre til Maskinporten som en audience claim.
  * @param consumerOrgNr  Det er organisasjonsnummeret til virksomheten som skal bruke maskinporten på vegne av
  * @param scope Space-separert liste over scopes som klienten forespør.
  * @param endpoint  Det er endepunktet til maskinporten
