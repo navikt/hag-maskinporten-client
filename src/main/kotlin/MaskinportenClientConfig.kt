@@ -17,8 +17,8 @@ import java.util.UUID
 
 interface MaskinportenClientConfig {
     val scope: String
+    val clientId: String
     val issuer: String
-    val aud: String
     val endpoint: String
     fun getJwtAssertion(): String
 }
@@ -28,18 +28,18 @@ interface MaskinportenClientConfig {
  *
  * @param kid  Det er id-en til Nøkkelen key-id (kid)
  * @param privateKey  Det er privatekey som skal brukes til å signere JWT tokenet
- * @param issuer  Det er Klient-id eller integration-id fra maskinporten det er en UUID
- * @param aud  Det er mottaker av tokenet i test er det https://test-maskinporten.no/
+ * @param clientId  issuer - Din egen client_id.
+ * @param issuer Audience - issuer-identifikatoren til Maskinporten. Verdi for aktuelt miljø finner du på .well-known-endpunkt.
  * @param consumerOrgNr  Det er organisasjonsnummeret til virksomheten som skal bruke maskinporten på vegne av
- * @param scope  Det er rettighetene som skal gis til maskinporten
+ * @param scope Space-separert liste over scopes som klienten forespør.
  * @param endpoint  Det er endepunktet til maskinporten
  *
  */
 class MaskinportenClientConfigPkey(
     val kid: String,
     val privateKey: String,
+    override val clientId: String,
     override val issuer: String,
-    override val aud: String,
     val consumerOrgNr: String,
     override val scope: String,
     override val endpoint: String
@@ -72,8 +72,8 @@ class MaskinportenClientConfigPkey(
         val claims =
             JWTClaimsSet
                 .Builder()
-                .issuer(issuer)
-                .audience(aud)
+                .issuer(clientId)
+                .audience(issuer)
                 .issueTime(Date(currentTimestamp * 1000))
                 .expirationTime(Date((currentTimestamp + 60) * 1000))
                 .claim("scope", scope)
@@ -93,17 +93,17 @@ class MaskinportenClientConfigPkey(
  * MaskinportenSimpleAssertion er en implementasjon av MaskinportenClientConfig med assertion som autentiseringsmetode
  * for maskinporten Denne brukes for å authentisere mot maskinporten for eksample for Altinn
  *
- * @param scope  Det er rettighetene som skal gis til maskinporten
- * @param issuer  Det er Klient-id eller integration-id fra maskinporten det er en UUID
- * @param aud  Det er mottaker av tokenet i test er det https://test-maskinporten.no/
- * @param endpoint  Det er endepunktet til maskinporten
- * @param clientJwk  Det er JWK som skal brukes til å signere JWT tokenet
+ * @param scope Space-separert liste over scopes som klienten forespør.
+ * @param clientId  issuer - Din egen client_id.
+ * @param issuer Audience - issuer-identifikatoren til Maskinporten. Verdi for aktuelt miljø finner du på .well-known-endpunkt.
+ * @param endpoint  Endepunktet til maskinporten
+ * @param clientJwk  JWK som skal brukes til å signere JWT tokenet
  *
  */
 class MaskinportenClientConfigSimpleAssertion(
     override val scope: String,
+    override val clientId: String,
     override val issuer: String,
-    override val aud: String,
     override val endpoint: String,
     val clientJwk: String
 ) : MaskinportenClientConfig {
@@ -130,8 +130,8 @@ class MaskinportenClientConfigSimpleAssertion(
     private fun claims(): JWTClaimsSet {
         val now = currentTime()
         return JWTClaimsSet.Builder()
-            .issuer(issuer)
-            .audience(aud)
+            .issuer(clientId)
+            .audience(issuer)
             .issueTime(now)
             .claim("scope", scope)
             .expirationTime(Date.from(now.toInstant().plusSeconds(60)))

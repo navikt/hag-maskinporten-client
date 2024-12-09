@@ -83,10 +83,10 @@ class MaskinportenClientTest {
                     MaskinportenClientConfigPkey(
                         kid = "test_kid",
                         privateKey = generatePkey(),
-                        issuer = "test_issuer",
+                        clientId = "test_issuer",
                         consumerOrgNr = "test_consumer_org_nr",
                         scope = "test_scope",
-                        aud = "https://test.test.no/",
+                        issuer = "https://test.test.no/",
                         endpoint = "https://test.test.no/token"
                     )
                 )
@@ -101,10 +101,10 @@ class MaskinportenClientTest {
 
     private fun getMaskinportenClientConfig() = MaskinportenClientConfigSimpleAssertion(
         scope = "test_scope",
-        issuer = "test_client_id",
+        clientId = "test_client_id",
         clientJwk = generateJWK(),
         endpoint = "https://test.test.no/",
-        aud = "https://test.test.no/token"
+        issuer = "https://test.test.no/token"
     )
 
     private fun httpclientMock(mockEngine: MockEngine) = HttpClient(mockEngine) {
