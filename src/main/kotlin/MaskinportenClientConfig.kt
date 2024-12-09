@@ -77,18 +77,7 @@ class MaskinportenClientConfigPkey(
                 .issueTime(Date(currentTimestamp * 1000))
                 .expirationTime(Date((currentTimestamp + 60) * 1000))
                 .claim("scope", scope)
-                .claim(
-                    "authorization_details",
-                    listOf(
-                        mapOf(
-                            "type" to "urn:altinn:systemuser",
-                            "systemuser_org" to mapOf(
-                                "authority" to "iso6523-actorid-upis",
-                                "ID" to "0192:$consumerOrgNr"
-                            )
-                        )
-                    )
-                )
+                .claim("consumer_org", consumerOrgNr)
                 .jwtID(UUID.randomUUID().toString())
                 .build()
 
