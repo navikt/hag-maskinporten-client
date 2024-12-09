@@ -22,6 +22,8 @@ data class TokenResponse(
         return "TokenResponse(accessToken='${accessToken.take(3)}', tokenType='$tokenType', expiresInSeconds=$expiresInSeconds, scope='$scope')"
     }
 }
+
+@Serializable
 class TokenResponseWrapper(val tokenResponse: TokenResponse) {
 
     private val issueTime = System.currentTimeMillis() / 1000
