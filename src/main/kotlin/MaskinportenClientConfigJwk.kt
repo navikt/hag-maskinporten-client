@@ -7,17 +7,16 @@ import com.nimbusds.jose.crypto.RSASSASigner
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
-import java.time.Instant
 import java.util.Date
 import java.util.UUID
 
-class MaskinportenClientConfigSimpleAssertion(
+class MaskinportenClientConfigJwk(
     override val scope: String,
     override val clientId: String,
     override val issuer: String,
     override val endpoint: String,
     val clientJwk: String,
-    override val additionalClaims: Map<String, Any>?
+    override val additionalClaims: Map<String, Any>? = null
 ) : MaskinportenClientConfig {
 
     private val rsaKey: RSAKey by lazy {
@@ -36,8 +35,6 @@ class MaskinportenClientConfigSimpleAssertion(
             .type(JOSEObjectType.JWT)
             .build()
     }
-
-    private fun currentTime(): Date = Date.from(Instant.now())
 
     private fun claims(): JWTClaimsSet {
         val now = currentTime()

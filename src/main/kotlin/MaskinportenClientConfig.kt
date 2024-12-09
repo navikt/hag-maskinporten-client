@@ -1,5 +1,8 @@
 package no.nav.helsearbeidsgiver.maskinporten
 
+import java.time.Instant
+import java.util.Date
+
 interface MaskinportenClientConfig {
     val scope: String
     val clientId: String
@@ -7,9 +10,11 @@ interface MaskinportenClientConfig {
     val endpoint: String
     val additionalClaims: Map<String, Any>?
     fun getJwtAssertion(): String
+    fun currentTime(): Date = Date.from(Instant.now())
 }
 
 fun getConsumerOrgClaim(orgNr: String) = mapOf("consumer_orgno" to orgNr)
+
 fun getSystemBrukerClaim(orgNr: String) = mapOf(
     "authorization_details" to listOf(
         mapOf(

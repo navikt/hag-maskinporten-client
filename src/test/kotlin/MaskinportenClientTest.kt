@@ -11,8 +11,8 @@ import io.ktor.serialization.kotlinx.json.json
 import io.mockk.every
 import kotlinx.coroutines.runBlocking
 import no.nav.helsearbeidsgiver.maskinporten.MaskinportenClient
+import no.nav.helsearbeidsgiver.maskinporten.MaskinportenClientConfigJwk
 import no.nav.helsearbeidsgiver.maskinporten.MaskinportenClientConfigPkey
-import no.nav.helsearbeidsgiver.maskinporten.MaskinportenClientConfigSimpleAssertion
 import no.nav.helsearbeidsgiver.maskinporten.createHttpClient
 import no.nav.helsearbeidsgiver.utils.test.mock.mockStatic
 import org.junit.jupiter.api.Test
@@ -84,7 +84,6 @@ class MaskinportenClientTest {
                         kid = "test_kid",
                         privateKey = generatePkey(),
                         clientId = "test_issuer",
-                        consumerOrgNr = "test_consumer_org_nr",
                         scope = "test_scope",
                         issuer = "https://test.test.no/",
                         endpoint = "https://test.test.no/token"
@@ -99,7 +98,7 @@ class MaskinportenClientTest {
         }
     }
 
-    private fun getMaskinportenClientConfig() = MaskinportenClientConfigSimpleAssertion(
+    private fun getMaskinportenClientConfig() = MaskinportenClientConfigJwk(
         scope = "test_scope",
         clientId = "test_client_id",
         clientJwk = generateJWK(),

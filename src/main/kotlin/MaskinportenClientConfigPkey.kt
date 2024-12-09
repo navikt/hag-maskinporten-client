@@ -52,12 +52,13 @@ class MaskinportenClientConfigPkey(
     }
 
     private fun claims(): JWTClaimsSet {
+        val now = currentTime()
         val builder = JWTClaimsSet
             .Builder()
             .issuer(clientId)
             .audience(issuer)
-            .issueTime(Date(currentTimestamp * 1000))
-            .expirationTime(Date((currentTimestamp + 60) * 1000))
+            .issueTime(now)
+            .expirationTime(Date.from(now.toInstant().plusSeconds(60)))
             .claim("scope", scope)
             .jwtID(UUID.randomUUID().toString())
 
