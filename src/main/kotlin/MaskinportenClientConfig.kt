@@ -13,9 +13,9 @@ interface MaskinportenClientConfig {
     fun currentTime(): Date = Date.from(Instant.now())
 }
 
-fun getConsumerOrgClaim(orgNr: String) = mapOf("consumer_orgno" to orgNr)
+fun getConsumerOrgClaim(orgnr: String) = mapOf("consumer_orgno" to orgnr)
 
-fun getSystemBrukerClaim(orgNr: String) = mapOf(
+fun getSystembrukerClaim(orgNr: String) = mapOf(
     "authorization_details" to listOf(
         mapOf(
             "type" to "urn:altinn:systemuser",
